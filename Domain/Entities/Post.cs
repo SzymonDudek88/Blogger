@@ -8,6 +8,7 @@ using Domain.Common;
 namespace Domain.Entities
 {
   public class Post : AuditableEntity // tu dziedziczy po klasie wiec posiada takze wlasciwosci odnosnie kreacji
+        // i czasu itd. - sprawa poboczna
     {
         public int Id { get; set; }
         public string Title { get; set; }

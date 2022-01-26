@@ -2,6 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Interfaces;
+using Application.Mappings;
+using Application.Services;
+using Domain.Interfaces;
+using Infrastructute.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -26,6 +31,18 @@ namespace WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //wstrzykujemy implementacje: jaka konkretna implementacja ma byc w wykorzystana w przypadku
+            //danego interfejsu
+            //perscoped - implementacja bedzie pojedyncza per cale ¿¹danie HTTP
+            services.AddScoped<IPostRepository, PostRepository>();
+            //po powyzszym framework asp . net core bedzie wiedzial ze gdzie kolwiek na wejsciu dostanei 
+            //interface ipostrepository to przypisze do niego implementacje klasy PostRepository
+            services.AddScoped<IPostService,PostService>();
+            
+            //singleton zapewnia ze implementacja bedzie tworzona tylko 1 raz
+            services.AddSingleton(AutoMapperConfig.Initialize());
+            //teraz framework bedzie wiedzial ze jak dostanie interface i maper to wstrzyknie implementacje automapconfig  
+
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

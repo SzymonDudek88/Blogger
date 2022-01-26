@@ -9,7 +9,11 @@ using Domain.Interfaces;
 namespace Infrastructute.Repositories
 {
     public class PostRepository : IPostRepository
+
+        //to jest glowna klasa przechowywania postow i od niej masz inne ruchy
     {
+        // tutaj w _posts sa zapisane posty... i to dziedziczy po ipostrepository...
+        //alle jak to sie dzieje ze idziemy do domeny....
         private static readonly ISet<Post> _posts = new HashSet<Post>() { 
         new Post (1, "Post1","zawartosc1"), 
         new Post (2, "Post2","zawartosc2"), //sprawdz co sie stanie jak id te same bd
