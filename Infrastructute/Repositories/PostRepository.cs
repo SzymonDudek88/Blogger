@@ -37,7 +37,7 @@ namespace Infrastructute.Repositories
             _posts.Add(post);
             return post;
         }
-        public void Update(Post post)
+        public void Update(Post post) // i co zmienimy tu cos?
         {
             post.LastModified = DateTime.UtcNow; 
         }

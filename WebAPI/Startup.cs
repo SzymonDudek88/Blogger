@@ -16,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using WebAPI.Installers;
 
 namespace WebAPI
 {
@@ -31,24 +32,8 @@ namespace WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //wstrzykujemy implementacje: jaka konkretna implementacja ma byc w wykorzystana w przypadku
-            //danego interfejsu
-            //perscoped - implementacja bedzie pojedyncza per cale ¿¹danie HTTP
-            services.AddScoped<IPostRepository, PostRepository>();
-            //po powyzszym framework asp . net core bedzie wiedzial ze gdzie kolwiek na wejsciu dostanei 
-            //interface ipostrepository to przypisze do niego implementacje klasy PostRepository
-            services.AddScoped<IPostService,PostService>();
-            
-            //singleton zapewnia ze implementacja bedzie tworzona tylko 1 raz
-            services.AddSingleton(AutoMapperConfig.Initialize());
-            //teraz framework bedzie wiedzial ze jak dostanie interface i maper to wstrzyknie implementacje automapconfig  
 
-
-            services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPI", Version = "v1" });
-            });
+            services.InstallServicesInAssembly(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

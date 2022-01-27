@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Dto;
 using Application.DTO;
 using Application.Interfaces;
 using AutoMapper;
+using Domain.Entities;
 using Domain.Interfaces;
 
 namespace Application.Services
@@ -23,7 +25,7 @@ namespace Application.Services
 
         //przypisujemy do zmiennej aby nie mozna bylo nic z nia zrobic:
         private readonly IPostRepository _postRepository;
-        private readonly IMapper _imapper;
+        private readonly IMapper _mapper;
         //dodano nowy konstruktor
         // wstrzyknięto zaleznosc
         public PostService(IPostRepository postRepository, IMapper mapper) //ctor Imaper potrzebny do mapowania
@@ -31,13 +33,31 @@ namespace Application.Services
             // i wtedy te repozytorium wstrzyykujemy w te klase i tutaj dzieja sie rzeczy ...
         {
             _postRepository = postRepository;
-            _imapper = mapper;
+            _mapper = mapper;
         }
+
+        public PostDto AddNewPost(CreatePostDto newPost)
+        {
+            if (newPost.Title == null)
+            {
+            throw new Exception("Post cant be empty");
+            }
+             var post = _mapper.Map<Post>(newPost);
+            _postRepository.Add(post);
+            return _mapper.Map<PostDto>(post);
+        }
+
+        public void DeletePost(int id)
+        {
+            var post = _postRepository.GetById(id);
+            _postRepository.Delete(post); 
+        }
+
         public IEnumerable<PostDto> GetAllPosts()
         {
             var posts = _postRepository.GetAll();
 
-            return _imapper.Map<IEnumerable<PostDto>>(posts);
+            return _mapper.Map<IEnumerable<PostDto>>(posts);
             
             //reczne mapowanie:
             //return posts.Select(x => new PostDto //dla kazdesgo reprezentanta posts tworzysz
@@ -67,7 +87,7 @@ namespace Application.Services
             var post = _postRepository.GetById(id);
 
 
-            return _imapper.Map<PostDto>(post); 
+            return _mapper.Map<PostDto>(post); 
             //reczne mapowanie
             //return new PostDto()
             //{
@@ -77,7 +97,20 @@ namespace Application.Services
 
             //};
 
-        } 
-               
+        }
+
+        public void UpdatePost(UpdatePostDto updatePost)
+        {
+            var existingPost = _postRepository.GetById(updatePost.Id); // pobierasz post, ponizej go nadpisujesz
+            //czyli on jest jakby po prostu wyciagniety z kolekcji i zmapowany
+            //existing post jest typu Post
+           var post = _mapper.Map(updatePost, existingPost); // wlasnie nie update post zrzucany jest na 
+            //-----------------------------------------
+            //mapowany post o tresci Updatepost i typie update post jest zmapowany typem na existin post a tresc ta sama
+           // -----------------------------
+            //wiec post powien byc typu   post i zawiera tresc z update post, wiec teraz tylko go przypisac:
+             
+            _postRepository.Update(post);
+        }
     }
 }

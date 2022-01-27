@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Dto;
 using Application.DTO;
 using Domain.Entities;
 
@@ -12,7 +13,7 @@ namespace Application.Interfaces
     {
         // nvm dlaczego dotyczy tylko 2 metod ...
         IEnumerable<PostDto> GetAllPosts();
-        PostDto GetPostId(int id); 
+        PostDto GetPostId(int id);
         //Metody serwisu nie moga zwracac modeli domenowych
         //metody tutaj beda wywolywane w webAPI - a te nie powinno wiedziec nic co dzieje sie w warstwie domenowej
         // modele domenowe powinny byc enkapsulowane w samej domenie
@@ -21,7 +22,9 @@ namespace Application.Interfaces
         //czyli DTO
 
         //i tutaj podmieniono Post na PostDto
-        
+        PostDto AddNewPost(CreatePostDto newPost);
+        void UpdatePost( UpdatePostDto updatePost);
+        void DeletePost( int id );
 
     }
 }
