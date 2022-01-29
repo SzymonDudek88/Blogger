@@ -11,6 +11,7 @@ namespace Domain.Interfaces
         // jest to jedne ze skladowan 
     {
           IEnumerable<Post> GetAll();
+          IEnumerable<Post> GetPostByTitleContent(string content);
 
           Post GetById(int id);
 

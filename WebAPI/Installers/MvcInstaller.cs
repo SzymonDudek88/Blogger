@@ -9,6 +9,8 @@ using Application.Services;
 using Domain.Interfaces;
 using Infrastructute;
 using Infrastructute.Repositories;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -24,6 +26,13 @@ namespace WebAPI.Installers
             services.AddInfrastructure();
             services.AddControllers();
 
+            services.AddApiVersioning(x => {
+                x.DefaultApiVersion = new ApiVersion(1,0);
+                x.AssumeDefaultVersionWhenUnspecified = true;
+                x.ReportApiVersions = true;
+                x.ApiVersionReader = new HeaderApiVersionReader("x-api-version");
+            
+            });
 
         }
     }

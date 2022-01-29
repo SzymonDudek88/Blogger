@@ -15,8 +15,8 @@ namespace Infrastructute.Repositories
         // tutaj w _posts sa zapisane posty... i to dziedziczy po ipostrepository...
         //alle jak to sie dzieje ze idziemy do domeny....
         private static readonly ISet<Post> _posts = new HashSet<Post>() { 
-        new Post (1, "Post1","zawartosc1"), 
-        new Post (2, "Post2","zawartosc2"), //sprawdz co sie stanie jak id te same bd
+        new Post (1, "Post1ZZ","zawartosc1"), 
+        new Post (2, "Post   2  ZZ  ","zawartosc2"), //sprawdz co sie stanie jak id te same bd
         new Post (3, "Post3","zawartosc3") // bez sprawdzania powiem ze singleordefault znajdzie pierwszy i go zwroci
         
         };
@@ -46,7 +46,23 @@ namespace Infrastructute.Repositories
             _posts.Remove(post);
         }
 
-       
-      
+        public IEnumerable<Post> GetPostByTitleContent(string content) //////////// tu LOGIKA CALA NIGDZIE INDZIEJ
+        {
+            bool stringIsOnlyWhiteSpaces = String.IsNullOrWhiteSpace(content);
+
+            if (stringIsOnlyWhiteSpaces)
+            {
+                return from a in _posts
+                       where a.Title.Contains(content)
+                       select a;
+            }
+            else
+            {
+                return from a in _posts
+                            where a.Title.ToLower().Contains(content.ToLower())
+                            select a;
+                
+            }
+        }
     }
 }

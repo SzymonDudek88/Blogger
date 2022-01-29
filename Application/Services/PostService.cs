@@ -58,7 +58,7 @@ namespace Application.Services
             var posts = _postRepository.GetAll();
 
             return _mapper.Map<IEnumerable<PostDto>>(posts);
-            
+            #region
             //reczne mapowanie:
             //return posts.Select(x => new PostDto //dla kazdesgo reprezentanta posts tworzysz
             //// nowa instancje PostDto o ponizszych parametrach - kazdy jeden parametr jest przepisany z 
@@ -77,7 +77,14 @@ namespace Application.Services
             //           Title = a.Title,
             //           Content = a.Content
             //       };
+            #endregion  
+        }
 
+        public IEnumerable<PostDto> GetPostByTitleContent(string content)
+        {
+            var posts = _postRepository.GetPostByTitleContent(content);
+
+            return  _mapper.Map<IEnumerable<PostDto>>(posts);
         }
 
         public PostDto GetPostId(int id)
@@ -88,14 +95,7 @@ namespace Application.Services
 
 
             return _mapper.Map<PostDto>(post); 
-            //reczne mapowanie
-            //return new PostDto()
-            //{
-            //    Id = post.Id,
-            //    Title = post.Title,
-            //    Content = post.Content
-
-            //};
+            
 
         }
 

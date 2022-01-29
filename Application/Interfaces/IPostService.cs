@@ -13,6 +13,8 @@ namespace Application.Interfaces
     {
         // nvm dlaczego dotyczy tylko 2 metod ...
         IEnumerable<PostDto> GetAllPosts();
+
+        IEnumerable<PostDto> GetPostByTitleContent(string content);
         PostDto GetPostId(int id);
         //Metody serwisu nie moga zwracac modeli domenowych
         //metody tutaj beda wywolywane w webAPI - a te nie powinno wiedziec nic co dzieje sie w warstwie domenowej

@@ -8,8 +8,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace WebAPI.Controllers
+namespace WebAPI.Controllers.V2
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
+    [ApiVersion("2.0")]
     [Route("api/[controller]")]
     [ApiController]
     public class PostsController : ControllerBase
@@ -28,8 +30,15 @@ namespace WebAPI.Controllers
             //pobieramy posty
             var posts = _postService.GetAllPosts();
 
-            return Ok(posts); //200 ok result 
+            return Ok(
+                new { 
+                 Posts = posts,
+                Count = posts.Count() 
+                }
+                ); //200 ok result 
         }
+
+      
 
         [SwaggerOperation(Summary = "Retrieves post by Id")]
         [HttpGet("{id}")]
