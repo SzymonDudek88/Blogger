@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Domain.Entities;
 using Domain.Interfaces;
+using Infrastructute.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructute.Repositories
 {
@@ -12,57 +14,56 @@ namespace Infrastructute.Repositories
 
         //to jest glowna klasa przechowywania postow i od niej masz inne ruchy
     {
-        // tutaj w _posts sa zapisane posty... i to dziedziczy po ipostrepository...
-        //alle jak to sie dzieje ze idziemy do domeny....
-        private static readonly ISet<Post> _posts = new HashSet<Post>() { 
-        new Post (1, "Post1ZZ","zawartosc1"), 
-        new Post (2, "Post   2  ZZ  ","zawartosc2"), //sprawdz co sie stanie jak id te same bd
-        new Post (3, "Post3","zawartosc3") // bez sprawdzania powiem ze singleordefault znajdzie pierwszy i go zwroci
-        
-        };
-        public IEnumerable<Post> GetAll()
+        private readonly BloggerContext _context;
+        public PostRepository(BloggerContext context)
         {
-            return _posts;
+            _context = context;
         }
 
-        public Post GetById(int id)
+
+        public async Task< IEnumerable<Post>> GetAllAsync()
         {
-            return _posts.SingleOrDefault(x => x.Id == id);
+            return await _context.Posts.ToListAsync()    ;
         }
 
-        public Post Add(Post post)
+        public async Task<Post> GetByIdAsync(int id)
         {
-            post.Id = _posts.Count + 1; // no proste, bo wszedł nowy post i nadajesz mu poprawne id
-            post.Created = DateTime.UtcNow ;
-            _posts.Add(post);
-            return post;
-        }
-        public void Update(Post post) // i co zmienimy tu cos?
-        {
-            post.LastModified = DateTime.UtcNow; 
-        }
-        public void Delete(Post post)
-        {
-            _posts.Remove(post);
+            return await _context.Posts.SingleOrDefaultAsync(x => x.Id == id);
         }
 
-        public IEnumerable<Post> GetPostByTitleContent(string content) //////////// tu LOGIKA CALA NIGDZIE INDZIEJ
+        public async Task<Post> AddAsync(Post post)
         {
-            bool stringIsOnlyWhiteSpaces = String.IsNullOrWhiteSpace(content);
+            
+          post.Created = DateTime.UtcNow ;
+            var createdPost = await _context.Posts.AddAsync(post); // po zmianach
+           await _context.SaveChangesAsync(); // zapisuje zmiany w bazie danych - koneiczne
+            return createdPost.Entity;
+        }
+        public async Task UpdateAsync(Post post) // i co zmienimy tu cos?
+        {
+            _context.Posts.Update(post);
+           await _context.SaveChangesAsync();
+            await Task.CompletedTask;
+        }
+        public async Task DeleteAsync(Post post)
+        {
+            _context.Posts.Remove(post);
+          await  _context.SaveChangesAsync();
+            await Task.CompletedTask;
 
-            if (stringIsOnlyWhiteSpaces)
-            {
-                return from a in _posts
-                       where a.Title.Contains(content)
-                       select a;
-            }
-            else
-            {
-                return from a in _posts
-                            where a.Title.ToLower().Contains(content.ToLower())
-                            select a;
-                
-            }
+        }
+
+        public async Task<IEnumerable<Post>> GetPostByTitleContentAsync(string content) //////////// tu LOGIKA CALA NIGDZIE INDZIEJ
+        {
+            //  bool stringIsOnlyWhiteSpaces = String.IsNullOrWhiteSpace(content);
+             
+            var temp =  from a in _context.Posts  
+                   where a.Title.ToLower().Contains(content.ToLower())
+                   select a;
+            return await temp.ToListAsync(); // xD
+
+
+
         }
     }
 }

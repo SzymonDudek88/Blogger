@@ -35,30 +35,12 @@ namespace Application.Services
             _postRepository = postRepository;
             _mapper = mapper;
         }
-
-        public PostDto AddNewPost(CreatePostDto newPost)
+        public async Task < IEnumerable<PostDto>> GetAllPostsAsync()
         {
-            if (newPost.Title == null)
-            {
-            throw new Exception("Post cant be empty");
-            }
-             var post = _mapper.Map<Post>(newPost);
-            _postRepository.Add(post);
-            return _mapper.Map<PostDto>(post);
-        }
-
-        public void DeletePost(int id)
-        {
-            var post = _postRepository.GetById(id);
-            _postRepository.Delete(post); 
-        }
-
-        public IEnumerable<PostDto> GetAllPosts()
-        {
-            var posts = _postRepository.GetAll();
+            var posts = await _postRepository.GetAllAsync();
 
             return _mapper.Map<IEnumerable<PostDto>>(posts);
-            #region
+             #region
             //reczne mapowanie:
             //return posts.Select(x => new PostDto //dla kazdesgo reprezentanta posts tworzysz
             //// nowa instancje PostDto o ponizszych parametrach - kazdy jeden parametr jest przepisany z 
@@ -80,28 +62,42 @@ namespace Application.Services
             #endregion  
         }
 
-        public IEnumerable<PostDto> GetPostByTitleContent(string content)
+
+
+
+        public async Task<IEnumerable<PostDto>> GetPostByTitleContentAsync(string content)
         {
-            var posts = _postRepository.GetPostByTitleContent(content);
+            var posts = await _postRepository.GetPostByTitleContentAsync(content);
 
             return  _mapper.Map<IEnumerable<PostDto>>(posts);
         }
 
-        public PostDto GetPostId(int id)
+        public async Task<PostDto> GetPostIdAsync(int id)
         {
             // jak moze wygladac implementacja hmmm
 
-            var post = _postRepository.GetById(id);
+            var post = await _postRepository.GetByIdAsync(id);
 
 
             return _mapper.Map<PostDto>(post); 
             
 
         }
-
-        public void UpdatePost(UpdatePostDto updatePost)
+        public async Task<PostDto> AddNewPostAsync(CreatePostDto newPost)
         {
-            var existingPost = _postRepository.GetById(updatePost.Id); // pobierasz post, ponizej go nadpisujesz
+            if (newPost.Title == null)
+            {
+                throw new Exception("Post cant be empty");
+            }
+            var post = _mapper.Map<Post>(newPost);
+           var result =  await _postRepository.AddAsync(post);
+            return _mapper.Map<PostDto>(result);
+        }
+
+     
+        public async Task UpdatePostAsync(UpdatePostDto updatePost)
+        {
+            var existingPost = await _postRepository.GetByIdAsync(updatePost.Id); // pobierasz post, ponizej go nadpisujesz
             //czyli on jest jakby po prostu wyciagniety z kolekcji i zmapowany
             //existing post jest typu Post
            var post = _mapper.Map(updatePost, existingPost); // wlasnie nie update post zrzucany jest na 
@@ -110,7 +106,13 @@ namespace Application.Services
            // -----------------------------
             //wiec post powien byc typu   post i zawiera tresc z update post, wiec teraz tylko go przypisac:
              
-            _postRepository.Update(post);
+           await _postRepository.UpdateAsync(post);
+        }
+
+        public async Task DeletePostAsync(int id)
+        {
+            var post = await  _postRepository.GetByIdAsync(id);
+            await _postRepository.DeleteAsync(post);
         }
     }
 }

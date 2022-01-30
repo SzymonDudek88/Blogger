@@ -12,10 +12,10 @@ namespace Application.Interfaces
    public interface IPostService 
     {
         // nvm dlaczego dotyczy tylko 2 metod ...
-        IEnumerable<PostDto> GetAllPosts();
+       Task < IEnumerable<PostDto>> GetAllPostsAsync();
 
-        IEnumerable<PostDto> GetPostByTitleContent(string content);
-        PostDto GetPostId(int id);
+       Task < IEnumerable<PostDto>> GetPostByTitleContentAsync(string content);
+        Task<PostDto> GetPostIdAsync(int id);
         //Metody serwisu nie moga zwracac modeli domenowych
         //metody tutaj beda wywolywane w webAPI - a te nie powinno wiedziec nic co dzieje sie w warstwie domenowej
         // modele domenowe powinny byc enkapsulowane w samej domenie
@@ -24,9 +24,9 @@ namespace Application.Interfaces
         //czyli DTO
 
         //i tutaj podmieniono Post na PostDto
-        PostDto AddNewPost(CreatePostDto newPost);
-        void UpdatePost( UpdatePostDto updatePost);
-        void DeletePost( int id );
+        Task<PostDto> AddNewPostAsync(CreatePostDto newPost);
+        Task UpdatePostAsync( UpdatePostDto updatePost);
+        Task DeletePostAsync ( int id );
 
     }
 }

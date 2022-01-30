@@ -26,9 +26,9 @@ namespace WebAPI.Controllers.V2
         //metoda ktora zwroci listę wszystkich postów
         [SwaggerOperation(Summary = "Retrieves all posts")]
         [HttpGet]// informacja że  akcja get odpowiada metodzie Http typu get
-        public IActionResult Get() {
+        public async Task<IActionResult> Get() {
             //pobieramy posty
-            var posts = _postService.GetAllPosts();
+            var posts = await _postService.GetAllPostsAsync();
 
             return Ok(
                 new { 
@@ -43,8 +43,8 @@ namespace WebAPI.Controllers.V2
         [SwaggerOperation(Summary = "Retrieves post by Id")]
         [HttpGet("{id}")]
 
-        public IActionResult Get(int id) {
-            var post = _postService.GetPostId(id);
+        public async Task<IActionResult> Get(int id) {
+            var post = await  _postService.GetPostIdAsync(id);
             if (post == null)
             {
                 return NotFound();
@@ -55,26 +55,26 @@ namespace WebAPI.Controllers.V2
         [SwaggerOperation(Summary = "Creating new post")]
         [HttpPost] // to oznacza ze akcja http odpowiada ponizszej akcji 
         // jeeli pojawi sie zadanie http typu post pod adres ponizej to wywola sie metoda z klasy post controller
-        public IActionResult Create(CreatePostDto newPost)
+        public async Task<IActionResult> Create(CreatePostDto newPost)
         {
-            var post = _postService.AddNewPost(newPost);
+            var post = await _postService.AddNewPostAsync(newPost);
             return Created($"api/posts/{post.Id}", post);
 
 
         }
         [SwaggerOperation(Summary = "Updating existing post")]
         [HttpPut]
-        public IActionResult Update(UpdatePostDto updatePost)
+        public async Task<IActionResult> Update(UpdatePostDto updatePost)
         {
-            _postService.UpdatePost(updatePost);
+           await _postService.UpdatePostAsync(updatePost);
 
             return NoContent();
         }
         [SwaggerOperation(Summary = "Delete post")]
         [HttpDelete("{id}")] // tu byl blad nie moze byc spacji  w "" 
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            _postService.DeletePost(id);
+          await  _postService.DeletePostAsync(id);
 
             return NoContent();
         }
