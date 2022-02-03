@@ -21,9 +21,10 @@ namespace Infrastructute.Repositories
         }
 
 
-        public async Task< IEnumerable<Post>> GetAllAsync()
+        public async Task< IEnumerable<Post>> GetAllAsync(int pageNumber, int pageSize  )
         {
-            return await _context.Posts.ToListAsync()    ;
+            //dzieki skip i take pobieramy odpowiednie posty
+            return await _context.Posts.Skip((pageNumber - 1 ) * pageSize).Take(pageSize).ToListAsync()    ;
         }
 
         public async Task<Post> GetByIdAsync(int id)
@@ -64,6 +65,11 @@ namespace Infrastructute.Repositories
 
 
 
+        }
+
+        public async Task<int> GetAllCountAsync()
+        {
+            return await _context.Posts.CountAsync();
         }
     }
 }

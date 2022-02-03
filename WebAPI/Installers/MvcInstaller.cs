@@ -30,8 +30,9 @@ namespace WebAPI.Installers
                 x.DefaultApiVersion = new ApiVersion(1,0);
                 x.AssumeDefaultVersionWhenUnspecified = true;
                 x.ReportApiVersions = true;
-                x.ApiVersionReader = new HeaderApiVersionReader("x-api-version");
-            
+             // x.ApiVersionReader = new HeaderApiVersionReader("x-api-version");
+                // to z lekcji o postmanie chyba jest i musi to byc bo inaczej sie nie odpala, natomiast po 
+                //cosmo db nie chce za cholere dzialac wiec nie ma co pomijac... za drugim razem dziala xD
             });
 
         }

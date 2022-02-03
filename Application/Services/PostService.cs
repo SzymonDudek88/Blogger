@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -35,9 +35,9 @@ namespace Application.Services
             _postRepository = postRepository;
             _mapper = mapper;
         }
-        public async Task < IEnumerable<PostDto>> GetAllPostsAsync()
+        public async Task < IEnumerable<PostDto>> GetAllPostsAsync(int pageNumber, int pageSize)
         {
-            var posts = await _postRepository.GetAllAsync();
+            var posts = await _postRepository.GetAllAsync(  pageNumber,   pageSize);
 
             return _mapper.Map<IEnumerable<PostDto>>(posts);
              #region
@@ -113,6 +113,11 @@ namespace Application.Services
         {
             var post = await  _postRepository.GetByIdAsync(id);
             await _postRepository.DeleteAsync(post);
+        }
+
+        public async Task<int> GetAllPostsCountAsync()
+        {
+            return await _postRepository.GetAllCountAsync();
         }
     }
 }

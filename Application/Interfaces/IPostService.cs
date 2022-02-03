@@ -12,7 +12,8 @@ namespace Application.Interfaces
    public interface IPostService 
     {
         // nvm dlaczego dotyczy tylko 2 metod ...
-       Task < IEnumerable<PostDto>> GetAllPostsAsync();
+       Task < IEnumerable<PostDto>> GetAllPostsAsync(int pageNumber, int pageSize  );
+       Task <  int> GetAllPostsCountAsync(  );
 
        Task < IEnumerable<PostDto>> GetPostByTitleContentAsync(string content);
         Task<PostDto> GetPostIdAsync(int id);

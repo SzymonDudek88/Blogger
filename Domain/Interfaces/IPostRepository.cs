@@ -10,7 +10,8 @@ namespace Domain.Interfaces
    public interface IPostRepository //dotyczy skladowania - okresla co trzeba uzywac odnosnie skladowania//
         // jest to jedne ze skladowan 
     {
-        Task<IEnumerable<Post>> GetAllAsync();
+        Task<IEnumerable<Post>> GetAllAsync(int pageNumber, int pageSize);
+        Task<int> GetAllCountAsync( );
         Task<IEnumerable<Post>> GetPostByTitleContentAsync(string content);
 
           Task<Post> GetByIdAsync(int id);

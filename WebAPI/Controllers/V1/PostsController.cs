@@ -3,13 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Application.Dto;
+using Application.DTO;
 using Application.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using WebAPI.Filters;
+using WebAPI.Helpers;
+using WebAPI.Wrappers;
 
 namespace WebAPI.Controllers.V1
 {
+   
     [Route("api/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
@@ -25,11 +30,27 @@ namespace WebAPI.Controllers.V1
         //metoda ktora zwroci listę wszystkich postów
         [SwaggerOperation(Summary = "Retrieves all posts")]
         [HttpGet]// informacja że  akcja get odpowiada metodzie Http typu get
-        public async Task< IActionResult> Get() {
-            //pobieramy posty
-            var posts = await _postService.GetAllPostsAsync();
+        public async Task < IActionResult> Get([FromQuery]PaginationFilter paginationFilter) {
+            // parametr fromquery  oznacza ze wartosc parametru zostanie pobrana z ciągu zapytania 
 
-            return Ok(posts); //200 ok result 
+            var validPaginationFilter = new PaginationFilter(paginationFilter.PageNumber, paginationFilter.PageSize);
+            //te dane teraz trzeba wyslac do odpowiedniego miejsca repozytorium
+            //zaczynamy od domeny i Ipostrepository
+            // potem do klasy postRepository w Infrastructure
+            //a potem klase seriwsu - w Application
+            // najpierw interfejs potem , potem interface post service potem Post service 
+            var posts = await _postService.GetAllPostsAsync(validPaginationFilter.PageNumber, validPaginationFilter.PageSize);
+            //lista wszystkich postow:
+            var totalRecords = await _postService.GetAllPostsCountAsync();
+
+            //to co dalej robimy: dodamy kolejna klase opakowujaca odpowiedz ktora rozszerzy response
+            // o kolejne parametry ktore maja sens tylko dla listy elementow
+
+            // po prostu opakowujemy :   no przeciez proste, 
+            //            return Ok(new PagedResponse<IEnumerable<PostDto>> (posts,validPaginationFilter.PageNumber, validPaginationFilter.PageSize)); //200 ok result 
+            ///to wyzej nei wie mczemu zastapione nizej to po co to pisalismy w tym odcinku        
+            return Ok(PaginationHelper.CreatePageResponse(posts, validPaginationFilter, totalRecords)); 
+        
         }
 
         [SwaggerOperation(Summary = "Retrieves posts cointaning searched text")]
@@ -51,7 +72,7 @@ namespace WebAPI.Controllers.V1
             {
                 return NotFound();
             }
-            return Ok(post);
+            return Ok(new Response <PostDto> (post));
         }
 
         [SwaggerOperation(Summary = "Creating new post")]
@@ -60,7 +81,7 @@ namespace WebAPI.Controllers.V1
         public async Task<IActionResult> Create(CreatePostDto newPost)
         {
             var post = await _postService.AddNewPostAsync(newPost);
-            return Created($"api/posts/{post.Id}", post);
+            return Created($"api/posts/{post.Id}", new Response<PostDto> (post));
 
 
         }

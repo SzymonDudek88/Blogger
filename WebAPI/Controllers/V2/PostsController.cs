@@ -28,7 +28,7 @@ namespace WebAPI.Controllers.V2
         [HttpGet]// informacja że  akcja get odpowiada metodzie Http typu get
         public async Task<IActionResult> Get() {
             //pobieramy posty
-            var posts = await _postService.GetAllPostsAsync();
+            var posts = await _postService.GetAllPostsAsync( 12 , 12); // wpisano na sztywno error
 
             return Ok(
                 new { 
