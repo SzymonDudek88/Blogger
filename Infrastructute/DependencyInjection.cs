@@ -22,6 +22,9 @@ namespace Infrastructute
             services.AddScoped<IPostRepository, PostRepository>();
             //po powyzszym framework asp . net core bedzie wiedzial ze gdzie kolwiek na wejsciu dostanei 
             //interface ipostrepository to przypisze do niego implementacje klasy PostRepository
+
+            // ponizej wstrzykujemy dla cosmos 
+            services.AddScoped<ICosmosPostRepository, CosmosPostRepository>();
             return services;
 
         }

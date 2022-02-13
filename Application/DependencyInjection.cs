@@ -17,8 +17,10 @@ namespace Application
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
-            services.AddScoped<IPostService, PostService>(); 
+            services.AddScoped<IPostService, PostService>();
             //singleton zapewnia ze implementacja bedzie tworzona tylko 1 raz
+
+            services.AddScoped<ICosmosPostService, CosmosPostService>();
            
             return services;
         }
