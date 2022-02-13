@@ -11,9 +11,10 @@ namespace Application.Interfaces
 {
    public interface IPostService 
     {
+        IQueryable<PostDto> GetAllPosts();
         // nvm dlaczego dotyczy tylko 2 metod ...
-       Task < IEnumerable<PostDto>> GetAllPostsAsync(int pageNumber, int pageSize  );
-       Task <  int> GetAllPostsCountAsync(  );
+       Task < IEnumerable<PostDto>> GetAllPostsAsync(int pageNumber, int pageSize, string sortField, bool ascending , string filterBy);
+       Task <  int> GetAllPostsCountAsync( string filterBy);
 
        Task < IEnumerable<PostDto>> GetPostByTitleContentAsync(string content);
         Task<PostDto> GetPostIdAsync(int id);

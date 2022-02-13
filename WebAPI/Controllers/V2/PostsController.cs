@@ -23,12 +23,14 @@ namespace WebAPI.Controllers.V2
         {
             _postService = postService; //przepisujesz posty
         }
+
+
         //metoda ktora zwroci listę wszystkich postów
         [SwaggerOperation(Summary = "Retrieves all posts")]
         [HttpGet]// informacja że  akcja get odpowiada metodzie Http typu get
         public async Task<IActionResult> Get() {
             //pobieramy posty
-            var posts = await _postService.GetAllPostsAsync( 12 , 12); // wpisano na sztywno error
+            var posts = await _postService.GetAllPostsAsync( 12 , 12, "title", true, "xx"); // wpisano na sztywno error
 
             return Ok(
                 new { 

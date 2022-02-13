@@ -9,6 +9,7 @@ using Application.Services;
 using Domain.Interfaces;
 using Infrastructute;
 using Infrastructute.Repositories;
+using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Configuration;
@@ -24,7 +25,12 @@ namespace WebAPI.Installers
 
             services.AddApplication();
             services.AddInfrastructure();
-            services.AddControllers();
+            services.AddControllers()
+                .AddJsonOptions( options =>
+                {
+                    options.JsonSerializerOptions.WriteIndented = true;
+                }
+                );
 
             services.AddApiVersioning(x => {
                 x.DefaultApiVersion = new ApiVersion(1,0);
@@ -35,6 +41,7 @@ namespace WebAPI.Installers
                 //cosmo db nie chce za cholere dzialac wiec nie ma co pomijac... za drugim razem dziala xD
             });
 
+            services.AddOData();
         }
     }
 }

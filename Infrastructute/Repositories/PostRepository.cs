@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructute.Data;
+using Infrastructute.ExtensionMethods;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructute.Repositories
@@ -20,13 +21,25 @@ namespace Infrastructute.Repositories
             _context = context;
         }
 
-
-        public async Task< IEnumerable<Post>> GetAllAsync(int pageNumber, int pageSize  )
+        public   IQueryable<Post> GetAll()
         {
-            //dzieki skip i take pobieramy odpowiednie posty
-            return await _context.Posts.Skip((pageNumber - 1 ) * pageSize).Take(pageSize).ToListAsync()    ;
+            return _context.Posts.AsQueryable(); // to pozwala ze dopiero klient bedzie decydowal jaki podzbior danych chce pobrac
         }
 
+        public async Task< IEnumerable<Post>> GetAllAsync(int pageNumber, int pageSize, string sortField, bool ascending, string filterBy)
+        {
+            // tutaj takze stosujemy metode ktora na gotowo ustawialismy do sortowania
+            //dzieki skip i take pobieramy odpowiednie posty
+            return await _context.Posts
+                .Where (m => m.Title.ToLower().Contains(filterBy.ToLower()) || m.Content.ToLower().Contains(filterBy.ToLower()))
+                .OrderByPropertyName(sortField,ascending)
+                .Skip((pageNumber - 1 ) * pageSize)
+                .Take(pageSize).ToListAsync()    ;
+        }
+        public async Task<int> GetAllCountAsync(string filterBy)
+        {
+            return await _context.Posts.Where(m => m.Title.ToLower().Contains(filterBy.ToLower()) || m.Content.ToLower().Contains(filterBy.ToLower())).CountAsync();
+        }
         public async Task<Post> GetByIdAsync(int id)
         {
             return await _context.Posts.SingleOrDefaultAsync(x => x.Id == id);
@@ -67,9 +80,6 @@ namespace Infrastructute.Repositories
 
         }
 
-        public async Task<int> GetAllCountAsync()
-        {
-            return await _context.Posts.CountAsync();
-        }
+      
     }
 }
