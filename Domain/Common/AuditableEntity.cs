@@ -21,5 +21,5 @@ namespace Domain.Common
         public DateTime? LastModified { get; set; } //zeby mogl byc nullem
         public string LastModifiedBy { get; set;  }
 
-    }
+    }  //Created  CreatedBy LastModified LastModifiedBy
 }

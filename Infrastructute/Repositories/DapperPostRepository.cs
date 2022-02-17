@@ -30,9 +30,7 @@ namespace Infrastructute.Repositories
             var sql = "SELECT * FROM Posts";
              return db.Query<Post>(sql).AsQueryable(); //xD
         }
-
-        
-
+         
         public  async  Task<Post> GetByIdAsync(int id)
         {
      
@@ -41,27 +39,42 @@ namespace Infrastructute.Repositories
 
             //   return await _context.Posts.SingleOrDefaultAsync(x => x.Id == id);
         }
-        public Task<Post> AddAsync(Post post)
+        public async Task<Post> AddAsync(Post post)
         {
-            throw new NotImplementedException();
+            var sql = "INSERT INTO Posts (Title, Content, Created, LastModified) VALUES (@Title, @Content, @Created, @LastModified);"
+              + "SELECT CAST(SCOPE_IDENTITY() as int); ";
+            var id = await db.QueryFirstOrDefaultAsync<int>(
+                sql,
+                new
+                {
+                    post.Title,
+                    post.Content,
+                    @Created = DateTime.UtcNow,
+                    @LastModified = DateTime.UtcNow
+                }).ConfigureAwait(false);
+
+            post.Id = id;
+             
+            return post;
         }
-        public Task UpdateAsync(Post post)
+        public async Task UpdateAsync(Post post)
         {
-            throw new NotImplementedException();
+            var sql =  "UPDATE Posts SET Content = @Content WHERE Id = @Id";
+            await db.ExecuteAsync(sql, post).ConfigureAwait(false);
+            // return post;
+
+            //var sql = "UPDATE Companies SET Name = @Name, Adress = @Adress, City = @City, State = @State, " +
+            //   "PostalCode = @PostalCode  WHERE  CompanyId = @CompanyId";  // pobiera company id z klasy company
+            //db.Execute(sql, company);
+            //return company;
+            //, LastModified = @LastModified
         }
-        public Task DeleteAsync(Post post)
+        public async Task DeleteAsync(Post post)
         {
-            throw new NotImplementedException();
+            var sql = "DELETE FROM Posts WHERE Id = @id";
+          await  db.ExecuteAsync(sql, new { @id =  post.Id }).ConfigureAwait(false);
         }
-      
-
-
-
-
-
-
        
-
         Task<IEnumerable<Post>> IPostRepository.GetAllAsync(int pageNumber, int pageSize, string sortField, bool ascending, string filterBy)
         {
             throw new NotImplementedException();
