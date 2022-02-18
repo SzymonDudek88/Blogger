@@ -36,8 +36,7 @@ namespace Infrastructute.Repositories
      
            var sql = "SELECT * FROM Posts WHERE Id = @id";
             return  await db.QuerySingleOrDefaultAsync<Post>(sql, new { id }).ConfigureAwait(false) ; // zwraca pojedynczy obiekt
-
-            //   return await _context.Posts.SingleOrDefaultAsync(x => x.Id == id);
+ 
         }
         public async Task<Post> AddAsync(Post post)
         {
@@ -60,14 +59,12 @@ namespace Infrastructute.Repositories
         public async Task UpdateAsync(Post post)
         {
             var sql =  "UPDATE Posts SET Content = @Content WHERE Id = @Id";
-            await db.ExecuteAsync(sql, post).ConfigureAwait(false);
-            // return post;
-
-            //var sql = "UPDATE Companies SET Name = @Name, Adress = @Adress, City = @City, State = @State, " +
-            //   "PostalCode = @PostalCode  WHERE  CompanyId = @CompanyId";  // pobiera company id z klasy company
-            //db.Execute(sql, company);
-            //return company;
-            //, LastModified = @LastModified
+            await db.ExecuteAsync(sql, new
+            {
+                post.Content,
+                @Id = post.Id
+            }).ConfigureAwait(false);
+           
         }
         public async Task DeleteAsync(Post post)
         {
