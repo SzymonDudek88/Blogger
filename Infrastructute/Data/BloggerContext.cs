@@ -7,13 +7,14 @@ using Microsoft.EntityFrameworkCore;
 
 using Domain.Entities;
 using Domain.Common;
- 
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
-namespace Infrastructute.Data
+namespace Infrastructute.Data 
 {
-    public class BloggerContext : DbContext
+    public class BloggerContext : IdentityDbContext  //  
     {
-        public BloggerContext(DbContextOptions options) : base(options)
+        /// dodatkowo klasa kontekstu blogger context 
+        public BloggerContext(DbContextOptions <BloggerContext> options) : base(options)
         {
         }
         public DbSet<Post> Posts { get; set; }

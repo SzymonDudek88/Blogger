@@ -19,8 +19,7 @@ namespace Infrastructute
             //wstrzykujemy implementacje: jaka konkretna implementacja ma byc w wykorzystana w przypadku
             //danego interfejsu
             //addscoped - implementacja bedzie pojedyncza per cale żądanie HTTP
-            services.AddScoped<IPostRepository, DapperPostRepository>(); // PostRepository // 
-            //po powyzszym framework asp . net core bedzie wiedzial ze gdzie kolwiek na wejsciu dostanei 
+            services.AddScoped<IPostRepository, PostRepository>(); // PostRepository // DapperPostRepository            //po powyzszym framework asp . net core bedzie wiedzial ze gdzie kolwiek na wejsciu dostanei 
             //interface ipostrepository to przypisze do niego implementacje klasy PostRepository
 
             // ponizej wstrzykujemy dla cosmos 
