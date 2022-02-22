@@ -25,7 +25,7 @@ namespace WebAPI.Installers
                 // asp . net core identity utworzy przez nas tabele potrzebne do uwierzytelniania i weryfikacji
                 // to bedzie widac w serverze
                 .AddEntityFrameworkStores<BloggerContext>()
-                .AddDefaultTokenProviders(); // Add-Migration AddIdentityTables
+                .AddDefaultTokenProviders(); // Add-Migration AddIdentityTables // ZMIEN DEFAULT PROJECT HAHA PRZY MIGRACJI PACANIE
 
 
 
