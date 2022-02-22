@@ -8,10 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using Domain.Entities;
 using Domain.Common;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Infrastructute.Identity;
 
 namespace Infrastructute.Data 
 {
-    public class BloggerContext : IdentityDbContext  //  
+    public class BloggerContext : IdentityDbContext<ApplicationUser>  //  tu byl blad i nie chcialo zrobic migracji
     {
         /// dodatkowo klasa kontekstu blogger context 
         public BloggerContext(DbContextOptions <BloggerContext> options) : base(options)
