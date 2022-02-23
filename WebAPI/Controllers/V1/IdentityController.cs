@@ -3,9 +3,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using WebAPI.Models;
 using WebAPI.Wrappers;
@@ -74,6 +78,48 @@ namespace WebAPI.Controllers.V1
             return Ok(new Response<bool> { Succeeded = true, Message = "User creation successfully " });
 
         }
+        [HttpPost]
+        [Route("Login")]
+        public async Task<IActionResult> Login(LoginModel login) // tworzymy klase modelu zeby umozliwic obsluge tej operacji 
+        {
+            // spr czy uzytkownik jest zarejestrowany
+            var user = await _userManager.FindByNameAsync(login.UserName);
 
+            if (user != null && await _userManager.CheckPasswordAsync(user, login.Password))
+            {
+                // jeseli jest wtedy robimy , generujemy token
+
+                // w pierwszej kolejnosci tworzymy oswiadczenie o roli uprawnieniu itd
+                var authClaims = new List<Claim> // security claim
+                {
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti,  Guid.NewGuid().ToString())
+
+
+                };
+                
+                var autSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+
+                var token = new JwtSecurityToken(
+                    expires: DateTime.Now.AddHours(2),
+                    claims: authClaims,
+                    signingCredentials: new SigningCredentials(autSigningKey, SecurityAlgorithms.HmacSha256)
+                    );
+
+                return Ok(
+                    new {  // co znaczy ze samo new tak mozna?
+                    
+                    token = new JwtSecurityTokenHandler ().WriteToken(token),
+                    expiration = token.ValidTo
+                    }
+
+                    );
+
+            }
+
+            // jezeli tak nie jest to zwracamy:
+            return Unauthorized();
+        
+        }
     }
 }
