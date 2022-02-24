@@ -13,7 +13,7 @@ namespace Application.Interfaces
     {
         IQueryable<PostDto> GetAllPosts();
         // nvm dlaczego dotyczy tylko 2 metod ...
-       Task < IEnumerable<PostDto>> GetAllPostsAsync(int pageNumber, int pageSize, string sortField, bool ascending , string filterBy);
+        Task<IEnumerable<PostDto>> GetAllPostsAsync(int pageNumber, int pageSize, string sortField, bool ascending, string filterBy);
        Task <  int> GetAllPostsCountAsync( string filterBy);
 
        Task < IEnumerable<PostDto>> GetPostByTitleContentAsync(string content);
@@ -26,7 +26,7 @@ namespace Application.Interfaces
         //czyli DTO
 
         //i tutaj podmieniono Post na PostDto
-        Task<PostDto> AddNewPostAsync(CreatePostDto newPost);
+        Task<PostDto> AddNewPostAsync(CreatePostDto newPost, string userId); // userID z db chyba do logowania 
         Task UpdatePostAsync( UpdatePostDto updatePost);
         Task DeletePostAsync ( int id );
 

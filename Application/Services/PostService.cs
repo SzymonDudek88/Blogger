@@ -93,13 +93,14 @@ namespace Application.Services
             
 
         }
-        public async Task<PostDto> AddNewPostAsync(CreatePostDto newPost)
+        public async Task<PostDto> AddNewPostAsync(CreatePostDto newPost, string userId) // userID z db chyba do logowania 
         {
             if (newPost.Title == null)
             {
                 throw new Exception("Post cant be empty");
             }
             var post = _mapper.Map<Post>(newPost);
+            post.UserId = userId; // potrzebne do logowania 
            var result =  await _postRepository.AddAsync(post);
             return _mapper.Map<PostDto>(result);
         }

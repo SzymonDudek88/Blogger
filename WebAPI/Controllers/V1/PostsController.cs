@@ -1,11 +1,13 @@
 ﻿ using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Application.Dto;
 using Application.DTO;
 using Application.Interfaces;
 using Microsoft.AspNet.OData;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -15,9 +17,12 @@ using WebAPI.Wrappers;
 
 namespace WebAPI.Controllers.V1
 {
-   
+   // atrybut autorize umozliwia ograniczenie dostepu na podstawie rol - deklaratywny do kontrolera lub akcji
+   // sprawdza uwierzytelnienie i dostepnosc do zasobów 
+
     [Route("api/[controller]")]
     [ApiVersion("1.0")]
+    [Authorize]
     [ApiController]
     public class PostsController : ControllerBase
     {
@@ -39,6 +44,7 @@ namespace WebAPI.Controllers.V1
 
         //metoda ktora zwroci listę wszystkich postów 
         [SwaggerOperation(Summary = "Retrieves paged posts")]
+        [AllowAnonymous]
         [HttpGet]// informacja że  akcja get odpowiada metodzie Http typu get                                                                   "" poniewaz ddomyslnie puste ma byc inaczje by wywalalo wyjatek kiedy nic by nie filtrowano
         public async Task < IActionResult> Get([FromQuery]PaginationFilter paginationFilter, [FromQuery]SortingFilter sortingFilter, [FromQuery] string filterBy = "") {
             // parametr fromquery  oznacza ze wartosc parametru zostanie pobrana z ciągu zapytania 
@@ -92,6 +98,7 @@ namespace WebAPI.Controllers.V1
 
 
         [SwaggerOperation(Summary = "Retrieves post by Id")]
+        [AllowAnonymous]
         [HttpGet("{id}")]
 
         public async Task<IActionResult> Get(int id) {
@@ -108,7 +115,7 @@ namespace WebAPI.Controllers.V1
         // jeeli pojawi sie zadanie http typu post pod adres ponizej to wywola sie metoda z klasy post controller
         public async Task<IActionResult> Create(CreatePostDto newPost)
         {
-            var post = await _postService.AddNewPostAsync(newPost);
+            var post = await _postService.AddNewPostAsync(newPost , User.FindFirstValue(ClaimTypes.NameIdentifier));
             return Created($"api/posts/{post.Id}", new Response<PostDto> (post));
 
 

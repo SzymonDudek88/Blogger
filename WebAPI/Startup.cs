@@ -54,7 +54,7 @@ namespace WebAPI
             app.UseHttpsRedirection();
 
             app.UseRouting();
-           
+           app.UseAuthentication(); // tu po mvc installer przyszedlem // "zabezpieczenia dostepu"
 
             app.UseAuthorization();
 

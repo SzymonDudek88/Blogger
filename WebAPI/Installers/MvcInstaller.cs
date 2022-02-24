@@ -41,6 +41,9 @@ namespace WebAPI.Installers
                 //cosmo db nie chce za cholere dzialac wiec nie ma co pomijac... za drugim razem dziala xD
             });
 
+            // rejestrujemy usluge uwierzytelniania 
+            services.AddAuthorization(); // i potem w startup wywolujemy metode use authorization w metodzie configure
+
             services.AddOData();
         }
     }
