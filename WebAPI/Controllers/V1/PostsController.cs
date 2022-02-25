@@ -15,6 +15,7 @@ using Swashbuckle.AspNetCore.Annotations;
 using WebAPI.Filters;
 using WebAPI.Helpers;
 using WebAPI.Wrappers;
+using Application.Services;
 
 namespace WebAPI.Controllers.V1
 {
@@ -131,11 +132,11 @@ namespace WebAPI.Controllers.V1
         [HttpPut]
         public async Task<IActionResult> Update(UpdatePostDto updatePost)
         {
-            // spr czy uzytkownik jest autorem posta 
+            // spr czy uzytkownik jest autorem posta UserOwnsPostAsync
             var userOwnsPost = await _postService.UserOwnsPostAsync(updatePost.Id, User.FindFirstValue(ClaimTypes.NameIdentifier)); // spr czy jest wlascicielem posta
             if (!userOwnsPost)
             {
-                return BadRequest(new Response<bool>() { Succeeded = false, Message = "you dont own this post"});
+                return BadRequest(new Response( false, "you dont own this post"));// przerobiono po zmianie klasy response
             }
 
 
@@ -155,7 +156,7 @@ namespace WebAPI.Controllers.V1
             // jezeli nie jest to bad reques
             if (!userOwnsPost && !userIsAdmin)
             {
-                return BadRequest(new Response<bool>() { Succeeded = false, Message = "you dont own this post" });
+                return BadRequest(new Response(false, "you dont own this post") ); // przerobiono po zmianie klasy response
             }
 
             await _postService.DeletePostAsync(id);

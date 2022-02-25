@@ -95,7 +95,7 @@ namespace Application.Services
         }
         public async Task<PostDto> AddNewPostAsync(CreatePostDto newPost, string userId) // userID z db chyba do logowania 
         {
-            if (newPost.Title == null)
+            if (string.IsNullOrEmpty(newPost.Title))
             {
                 throw new Exception("Post cant be empty");
             }

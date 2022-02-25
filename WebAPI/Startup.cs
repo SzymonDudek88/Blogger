@@ -22,6 +22,7 @@ using Microsoft.OData;
 using Microsoft.OData.Edm;
 using Microsoft.OpenApi.Models;
 using WebAPI.Installers;
+using WebAPI.Middlewares;
 
 namespace WebAPI
 {
@@ -50,7 +51,9 @@ namespace WebAPI
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPI v1"));
             }
+            // uzywamy middleware na poczatku  - dosc wazne w sumie, bo zalezy gdzie wylapie wyjatek a moze przy kolejnych czynnosciach
 
+            app.UseMiddleware<ErrorHandlingMiddleware>();
             app.UseHttpsRedirection();
 
             app.UseRouting();

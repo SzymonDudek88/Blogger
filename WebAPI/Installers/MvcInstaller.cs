@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using WebAPI.Middlewares;
 
 namespace WebAPI.Installers
 {
@@ -46,6 +47,9 @@ namespace WebAPI.Installers
 
             // odnosnie czasu i nazwy uzytkownika 
             services.AddTransient<UserResolverService>();
+
+            //rejestrujemy serwis w aplikacji dotyczacy middleware
+            services.AddScoped<ErrorHandlingMiddleware>(); // terz po rejesdtracji nalezy go uzyc wmetodzie configure w klasie startup
 
             services.AddOData();
         }
