@@ -148,7 +148,61 @@ namespace WebAPI.Controllers.V1
 
             return Ok(new Response<bool> { Succeeded = true, Message = "User creation successfully " });
 
+        } /// -------------------------------------- admin
+
+        [HttpPost]
+        [Route("RegisterSuperUser")]
+        public async Task<IActionResult> RegisterSuperUser(RegisterModel register)
+        {
+            // na poczatku sprawdzamy za pomoca findbynameasycn z usermanager czy uzytkownik nie jest juz zarejestrowany
+            var userExist = await _userManager.FindByNameAsync(register.UserName); // find by name to metadata
+            if (userExist != null)
+            {
+                //  w odpowiedzi zwracamy obiekt response rozszerzony o wiadomosc string = komunikat 
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response<bool>
+                {
+                    Succeeded = false,
+                    Message = "User alredy exists"
+
+                });
+            }
+
+            ApplicationUser user = new ApplicationUser()
+            {
+                Email = register.Email,
+                SecurityStamp = Guid.NewGuid().ToString(), // unikalny identyfikator, gdy zmieni sie cos zwiazanego z bezpieczenstwem
+                //np haslo wtedy pliki cookie z logowania zostana uniewaznione
+                UserName = register.UserName
+
+            };
+
+            var result = await _userManager.CreateAsync(user, register.Password); // zwraca IdentityResult ( to meta klasa)
+            if (!result.Succeeded)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response<bool>
+                {
+                    Succeeded = false,
+                    Message = "Creation failed , check details and try again",
+                    Errors = result.Errors.Select(x => x.Description)
+
+                });
+            }
+
+            // zakonczono powodzeniem po przejsciu ifow 
+
+            // sprawdzamy czy rola user juz istnieje bo chcemy ja przypisac przy rejestracji 
+            if (!await _roleManager.RoleExistsAsync(UserRoles.SuperUser)) //  falsz falsz = true -- nie istnieje nie to robimy 
+            {
+                await _roleManager.CreateAsync(new IdentityRole(UserRoles.SuperUser));
+            }
+            // nastepnie z klasy usermanager dodajemy role user do uzytkownika 
+            await _userManager.AddToRoleAsync(user, UserRoles.SuperUser);
+
+
+            return Ok(new Response<bool> { Succeeded = true, Message = "User creation successfully " });
+
         }
+        // --------------------------------------------------
 
 
         [HttpPost]
