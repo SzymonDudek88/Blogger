@@ -1,6 +1,7 @@
 ﻿ using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Application.Dto;
 using Application.DTO;
@@ -59,7 +60,8 @@ namespace WebAPI.Controllers.V3
         // jeeli pojawi sie zadanie http typu post pod adres ponizej to wywola sie metoda z klasy post controller
         public async Task<IActionResult> Create(CreatePostDto newPost)
         {
-            var post = await _postService.AddNewPostAsync(newPost);
+           
+            var post = await _postService.AddNewPostAsync(newPost, User.FindFirstValue(ClaimTypes.NameIdentifier)); // identify
             return Created($"api/posts/{post.Id}", new Response<PostDto> (post));
 
 

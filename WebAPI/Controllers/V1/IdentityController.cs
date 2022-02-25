@@ -92,6 +92,9 @@ namespace WebAPI.Controllers.V1
                 // w pierwszej kolejnosci tworzymy oswiadczenie o roli uprawnieniu itd
                 var authClaims = new List<Claim> // security claim
                 {
+                    new Claim(ClaimTypes.NameIdentifier, user.Id),
+
+
                 new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Jti,  Guid.NewGuid().ToString())
 

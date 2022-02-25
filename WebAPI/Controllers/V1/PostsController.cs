@@ -124,6 +124,14 @@ namespace WebAPI.Controllers.V1
         [HttpPut]
         public async Task<IActionResult> Update(UpdatePostDto updatePost)
         {
+            // spr czy uzytkownik jest autorem posta 
+            var userOwnsPost = await _postService.UserOwnsPostAsync(updatePost.Id, User.FindFirstValue(ClaimTypes.NameIdentifier)); // spr czy jest wlascicielem posta
+            if (!userOwnsPost)
+            {
+                return BadRequest(new Response<bool>() { Succeeded = false, Message = "you dont own this post"});
+            }
+
+
           await  _postService.UpdatePostAsync(updatePost);
 
             return NoContent();
@@ -132,7 +140,14 @@ namespace WebAPI.Controllers.V1
         [HttpDelete("{id}")] // tu byl blad nie moze byc spacji  w "" 
         public async Task<IActionResult> Delete(int id)
         {
-           await _postService.DeletePostAsync(id);
+            // spr czy uzytkownik jest autorem posta 
+            var userOwnsPost = await _postService.UserOwnsPostAsync(id, User.FindFirstValue(ClaimTypes.NameIdentifier)); // spr czy jest wlascicielem posta
+            if (!userOwnsPost)
+            {
+                return BadRequest(new Response<bool>() { Succeeded = false, Message = "you dont own this post" });
+            }
+
+            await _postService.DeletePostAsync(id);
 
             return NoContent();
         }

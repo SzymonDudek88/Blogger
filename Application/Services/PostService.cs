@@ -131,6 +131,19 @@ namespace Application.Services
             return await _postRepository.GetAllCountAsync(filterBy);
         }
 
-     
+        public async Task<bool> UserOwnsPostAsync(int postId, string userId)
+        {
+              var post = await _postRepository.GetByIdAsync (postId);
+            if (post == null) 
+            { 
+            return false;
+            }
+            if (post.UserId != userId)
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }
