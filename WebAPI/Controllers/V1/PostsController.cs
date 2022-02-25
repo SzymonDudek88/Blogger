@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Application.Dto;
 using Application.DTO;
 using Application.Interfaces;
+using Infrastructute.Identity;
 using Microsoft.AspNet.OData;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -22,7 +23,7 @@ namespace WebAPI.Controllers.V1
 
     [Route("api/[controller]")]
     [ApiVersion("1.0")]
-    [Authorize]
+    [Authorize] // okreslanie roli ktora pozwala na uzycie danej zasobu wg jakiejs danej roli
     [ApiController]
     public class PostsController : ControllerBase
     {
@@ -35,6 +36,7 @@ namespace WebAPI.Controllers.V1
         }
 
         [SwaggerOperation(Summary = "Retrieves sort fields")] 
+        [AllowAnonymous]
         [HttpGet("[action]")]// informacja że  akcja get odpowiada metodzie Http typu get
         public  IActionResult  GetSortFields( )
         {
@@ -77,6 +79,7 @@ namespace WebAPI.Controllers.V1
         }
 
         [SwaggerOperation(Summary = "Retrieves posts cointaning searched text")]
+        [AllowAnonymous]
         [HttpGet("Search/{TextToFind}")]// informacja że  akcja get odpowiada metodzie Http typu get
         public async Task<IActionResult> GetPostByTitleContent(string TextToFind)
         {
@@ -88,6 +91,8 @@ namespace WebAPI.Controllers.V1
 
         [SwaggerOperation(Summary = "Retrieves all posts")]
         [EnableQuery]
+        [Authorize(Roles = UserRoles.Admin)] // UWAGA1!!!! nadrzedny jest zawsze górny atrybut z calego kontrolera(tam w naglowku pod wersja), bo nadał on dostep wszedzie jako dostepny dla USER
+       // i admin nie mial dostepu jako user bo nie byl userem a tylko adminem! - kasujesz z naglowka role na puste authorize
         [HttpGet("[action]")]
         // zapytanie bedzie wykonane na bazie danych linq - sql - jezeli bylo by ienumerable to pobralby nie potrzebnie
         // cala ilosc np 1000 postow i dopiero wybral 5
@@ -111,6 +116,7 @@ namespace WebAPI.Controllers.V1
         }
 
         [SwaggerOperation(Summary = "Creating new post")]
+        [Authorize(Roles = UserRoles.User)]
         [HttpPost] // to oznacza ze akcja http odpowiada ponizszej akcji 
         // jeeli pojawi sie zadanie http typu post pod adres ponizej to wywola sie metoda z klasy post controller
         public async Task<IActionResult> Create(CreatePostDto newPost)
@@ -121,6 +127,7 @@ namespace WebAPI.Controllers.V1
 
         }
         [SwaggerOperation(Summary = "Updating existing post")]
+        [Authorize(Roles = UserRoles.User)]
         [HttpPut]
         public async Task<IActionResult> Update(UpdatePostDto updatePost)
         {
@@ -137,12 +144,16 @@ namespace WebAPI.Controllers.V1
             return NoContent();
         }
         [SwaggerOperation(Summary = "Delete post")]
+        [Authorize(Roles = UserRoles.AdminOrUser)] // bo sa podane po przecinku - recznie wpisane bylo by "Admin,User"
         [HttpDelete("{id}")] // tu byl blad nie moze byc spacji  w "" 
         public async Task<IActionResult> Delete(int id)
         {
             // spr czy uzytkownik jest autorem posta 
             var userOwnsPost = await _postService.UserOwnsPostAsync(id, User.FindFirstValue(ClaimTypes.NameIdentifier)); // spr czy jest wlascicielem posta
-            if (!userOwnsPost)
+            // jeszcze sprawdzamy czy uzytkownik jest przypisany jako admin
+            var userIsAdmin = User.FindFirstValue(ClaimTypes.Role).Contains(UserRoles.Admin);
+            // jezeli nie jest to bad reques
+            if (!userOwnsPost && !userIsAdmin)
             {
                 return BadRequest(new Response<bool>() { Succeeded = false, Message = "you dont own this post" });
             }

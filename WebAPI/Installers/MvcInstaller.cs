@@ -44,6 +44,9 @@ namespace WebAPI.Installers
             // rejestrujemy usluge uwierzytelniania 
             services.AddAuthorization(); // i potem w startup wywolujemy metode use authorization w metodzie configure
 
+            // odnosnie czasu i nazwy uzytkownika 
+            services.AddTransient<UserResolverService>();
+
             services.AddOData();
         }
     }
