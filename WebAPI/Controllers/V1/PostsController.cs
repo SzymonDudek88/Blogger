@@ -92,7 +92,7 @@ namespace WebAPI.Controllers.V1
 
         [SwaggerOperation(Summary = "Retrieves all posts")]
         [EnableQuery]
-        [Authorize(Roles = UserRoles.Admin)] // UWAGA1!!!! nadrzedny jest zawsze górny atrybut z calego kontrolera(tam w naglowku pod wersja), bo nadał on dostep wszedzie jako dostepny dla USER
+        [Authorize(Roles = UserRoles.AdminOrSuperUser)] // UWAGA1!!!! nadrzedny jest zawsze górny atrybut z calego kontrolera(tam w naglowku pod wersja), bo nadał on dostep wszedzie jako dostepny dla USER
        // i admin nie mial dostepu jako user bo nie byl userem a tylko adminem! - kasujesz z naglowka role na puste authorize
         [HttpGet("[action]")]
         // zapytanie bedzie wykonane na bazie danych linq - sql - jezeli bylo by ienumerable to pobralby nie potrzebnie
@@ -117,7 +117,7 @@ namespace WebAPI.Controllers.V1
         }
 
         [SwaggerOperation(Summary = "Creating new post")]
-        [Authorize(Roles = UserRoles.User)]
+        [Authorize(Roles = UserRoles.UserOrSuperUser)]
         [HttpPost] // to oznacza ze akcja http odpowiada ponizszej akcji 
         // jeeli pojawi sie zadanie http typu post pod adres ponizej to wywola sie metoda z klasy post controller
         public async Task<IActionResult> Create(CreatePostDto newPost)
@@ -128,7 +128,7 @@ namespace WebAPI.Controllers.V1
 
         }
         [SwaggerOperation(Summary = "Updating existing post")]
-        [Authorize(Roles = UserRoles.User)]
+        [Authorize(Roles = UserRoles.UserOrSuperUser)]
         [HttpPut]
         public async Task<IActionResult> Update(UpdatePostDto updatePost)
         {
@@ -145,7 +145,7 @@ namespace WebAPI.Controllers.V1
             return NoContent();
         }
         [SwaggerOperation(Summary = "Delete post")]
-        [Authorize(Roles = UserRoles.AdminOrUser)] // bo sa podane po przecinku - recznie wpisane bylo by "Admin,User"
+        [Authorize(Roles = UserRoles.AdminOrUserOrSuperUser)] // bo sa podane po przecinku - recznie wpisane bylo by "Admin,User"
         [HttpDelete("{id}")] // tu byl blad nie moze byc spacji  w "" 
         public async Task<IActionResult> Delete(int id)
         {
@@ -153,8 +153,9 @@ namespace WebAPI.Controllers.V1
             var userOwnsPost = await _postService.UserOwnsPostAsync(id, User.FindFirstValue(ClaimTypes.NameIdentifier)); // spr czy jest wlascicielem posta
             // jeszcze sprawdzamy czy uzytkownik jest przypisany jako admin
             var userIsAdmin = User.FindFirstValue(ClaimTypes.Role).Contains(UserRoles.Admin);
+            var userIsSuperUser = User.FindFirstValue(ClaimTypes.Role).Contains(UserRoles.SuperUser); // spr czy jest superuser
             // jezeli nie jest to bad reques
-            if (!userOwnsPost && !userIsAdmin)
+            if (!userOwnsPost && !userIsAdmin && !userIsSuperUser)
             {
                 return BadRequest(new Response(false, "you dont own this post") ); // przerobiono po zmianie klasy response
             }

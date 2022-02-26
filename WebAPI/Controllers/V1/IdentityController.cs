@@ -172,8 +172,7 @@ namespace WebAPI.Controllers.V1
                 Email = register.Email,
                 SecurityStamp = Guid.NewGuid().ToString(), // unikalny identyfikator, gdy zmieni sie cos zwiazanego z bezpieczenstwem
                 //np haslo wtedy pliki cookie z logowania zostana uniewaznione
-                UserName = register.UserName
-
+                UserName = register.UserName 
             };
 
             var result = await _userManager.CreateAsync(user, register.Password); // zwraca IdentityResult ( to meta klasa)
