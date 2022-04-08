@@ -23,7 +23,7 @@ namespace Infrastructute.Data
         }
         public DbSet<Post> Posts { get; set; }
 
-        public async Task< int> SaveChangesAsync    () //opakowany typ int 
+        public async Task< int> SaveChangesAsync() //opakowany typ int 
         {
             //wyszukujemy wszystkie encje ktore sa typy auditable entity - te od czasu na poczatk utworzone
             var entries = ChangeTracker

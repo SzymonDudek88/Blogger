@@ -53,7 +53,7 @@ namespace WebAPI
             }
             // uzywamy middleware na poczatku  - dosc wazne w sumie, bo zalezy gdzie wylapie wyjatek a moze przy kolejnych czynnosciach
 
-            app.UseMiddleware<ErrorHandlingMiddleware>();
+            app.UseMiddleware<ErrorHandlingMiddleware>(); // middle ware l2
             app.UseHttpsRedirection();
 
             app.UseRouting();

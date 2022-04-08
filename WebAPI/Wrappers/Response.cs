@@ -28,7 +28,7 @@ namespace WebAPI.Wrappers
         }
 
     }
-        public class Response
+        public class Response // middleware L2
         {
             public bool Succeeded { get; set; }
             public string Message { get; set; }

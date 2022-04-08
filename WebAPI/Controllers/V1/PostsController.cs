@@ -16,6 +16,8 @@ using WebAPI.Filters;
 using WebAPI.Helpers;
 using WebAPI.Wrappers;
 using Application.Services;
+using Application.Validators;
+using WebAPI.Attributes;
 
 namespace WebAPI.Controllers.V1
 {
@@ -116,14 +118,33 @@ namespace WebAPI.Controllers.V1
             return Ok(new Response <PostDto> (post));
         }
 
+        [ValidateFilter] // ValidateFilterAttribute - ale nie dajesz attribute - taka konwencja 
         [SwaggerOperation(Summary = "Creating new post")]
         [Authorize(Roles = UserRoles.UserOrSuperUser)]
         [HttpPost] // to oznacza ze akcja http odpowiada ponizszej akcji 
         // jeeli pojawi sie zadanie http typu post pod adres ponizej to wywola sie metoda z klasy post controller
         public async Task<IActionResult> Create(CreatePostDto newPost)
         {
-            var post = await _postService.AddNewPostAsync(newPost , User.FindFirstValue(ClaimTypes.NameIdentifier));
-            return Created($"api/posts/{post.Id}", new Response<PostDto> (post));
+            // first create  validator object :
+            var validator = new CreatePostDtoValidator();
+
+            //var result = validator.Validate(newPost);
+            //if (!result.IsValid)
+            //{
+            //    return BadRequest(new Response<bool>
+            //    {
+            //        Succeeded = false,
+            //        Message = "Something went wrong.",
+            //        Errors = result.Errors.Select(x => x.ErrorMessage)
+
+            //    } );
+            //}
+            // to komentowane przy okazji walidacji nvm czy bedzie uzyte L5 fluent validation
+
+            var tempString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var post = await _postService.AddNewPostAsync(newPost , tempString);
+            return Created($"api/posts/{post.Id}", new Response<PostDto>(post));
 
 
         }

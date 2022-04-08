@@ -75,9 +75,7 @@ namespace Infrastructute.Repositories
                    where a.Title.ToLower().Contains(content.ToLower())
                    select a;
             return await temp.ToListAsync(); // xD
-
-
-
+ 
         }
 
       
