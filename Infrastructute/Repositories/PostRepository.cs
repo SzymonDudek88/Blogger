@@ -13,7 +13,7 @@ namespace Infrastructute.Repositories
 {
     public class PostRepository : IPostRepository
 
-        //to jest glowna klasa przechowywania postow i od niej masz inne ruchy
+        
     {
         private readonly BloggerContext _context;
         public PostRepository(BloggerContext context)
@@ -23,7 +23,7 @@ namespace Infrastructute.Repositories
 
         public   IQueryable<Post> GetAll()
         {
-            return _context.Posts.AsQueryable(); // to pozwala ze dopiero klient bedzie decydowal jaki podzbior danych chce pobrac
+            return _context.Posts.AsQueryable();  
         }
 
         public async Task< IEnumerable<Post>> GetAllAsync(int pageNumber, int pageSize, string sortField, bool ascending, string filterBy)
@@ -53,7 +53,7 @@ namespace Infrastructute.Repositories
            await _context.SaveChangesAsync(); // zapisuje zmiany w bazie danych - koneiczne
             return createdPost.Entity;
         }
-        public async Task UpdateAsync(Post post) // i co zmienimy tu cos?
+        public async Task UpdateAsync(Post post)  
         {
             _context.Posts.Update(post);
            await _context.SaveChangesAsync();
@@ -67,14 +67,14 @@ namespace Infrastructute.Repositories
 
         }
 
-        public async Task<IEnumerable<Post>> GetPostByTitleContentAsync(string content) //////////// tu LOGIKA CALA NIGDZIE INDZIEJ
+        public async Task<IEnumerable<Post>> GetPostByTitleContentAsync(string content)  
         {
             //  bool stringIsOnlyWhiteSpaces = String.IsNullOrWhiteSpace(content);
              
             var temp =  from a in _context.Posts  
                    where a.Title.ToLower().Contains(content.ToLower())
                    select a;
-            return await temp.ToListAsync(); // xD
+            return await temp.ToListAsync();  
  
         }
 

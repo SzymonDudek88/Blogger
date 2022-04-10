@@ -5,10 +5,8 @@ using System.Threading.Tasks;
 
 namespace WebAPI.Wrappers
 {
-    public class Response<T> : Response // dziedziczy po tej nizej dlatego przeniesiono propy
-                                        // generyczna klasa // i teraz nie wiem co ta klasa robi?
-    {
-
+    public class Response<T> : Response  
+    { 
         // w sumie to dosc proste, nowa klasa ktora zwraca w PostControllerze to samo tylko jako nowa instancje
         // z dodatkowym dopiskiem
         public T Data { get; set; }

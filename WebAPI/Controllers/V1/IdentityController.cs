@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -35,7 +36,8 @@ namespace WebAPI.Controllers.V1
             _roleManager = roleManager; // wstrzykujemy 
             _configuration = configuration;
         }
-        //sygnatura akcji register - sluzaca do rejestracji 
+        //sygnatura akcji register - sluzaca do rejestracji \
+        [SwaggerOperation(Summary = "Register new standard user")]
         [HttpPost]
         [Route("Register")]  // uzytkownik musi podac nazwe email i haslo
         // dlatego nalezy utworzyc klase modelu ktora bedzie wykorzystywnana do przesylania tych informacji
@@ -93,6 +95,7 @@ namespace WebAPI.Controllers.V1
 
         }
 
+        [SwaggerOperation(Summary = "Register new admin account")]
         [HttpPost]
         [Route("RegisterAdmin")]  // uzytkownik musi podac nazwe email i haslo
         // dlatego nalezy utworzyc klase modelu ktora bedzie wykorzystywnana do przesylania tych informacji
@@ -150,6 +153,7 @@ namespace WebAPI.Controllers.V1
 
         } /// -------------------------------------- admin
 
+        [SwaggerOperation(Summary = "Register new super user")]
         [HttpPost]
         [Route("RegisterSuperUser")]
         public async Task<IActionResult> RegisterSuperUser(RegisterModel register)
@@ -203,7 +207,7 @@ namespace WebAPI.Controllers.V1
         }
         // --------------------------------------------------
 
-
+        [SwaggerOperation(Summary = "Log in")]
         [HttpPost]
         [Route("Login")]
         public async Task<IActionResult> Login(LoginModel login) // tworzymy klase modelu zeby umozliwic obsluge tej operacji 
@@ -224,7 +228,7 @@ namespace WebAPI.Controllers.V1
                 new Claim(JwtRegisteredClaimNames.Jti,  Guid.NewGuid().ToString())
                 };
 
-                // TUWAZNE bedzie! uzytkownik moze mice kika rol wiec pobieramy jego wszystkie role tutaj !!!!  3:54 role uzytkownikow
+                // TUWAZNE bedzie! uzytkownik moze mice kika rol wiec pobieramy jego wszystkie role tutaj !!!!  
 
                 var userRoles = await _userManager.GetRolesAsync(user);
                 //dla kazdej z rol tworzymy oswiadczenie typu role
@@ -243,7 +247,7 @@ namespace WebAPI.Controllers.V1
                     );
 
                 return Ok(
-                    new {  // co znaczy ze samo new tak mozna?
+                    new {   
                     
                     token = new JwtSecurityTokenHandler ().WriteToken(token),
                     expiration = token.ValidTo

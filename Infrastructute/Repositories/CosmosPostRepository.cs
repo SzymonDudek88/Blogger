@@ -36,7 +36,7 @@ namespace Infrastructute.Repositories
             return await _cosmosStore.AddAsync(post);
             
         } 
-        public async Task UpdateAsync(CosmosPost post) // to jest tylko task, nie returnujesz przeciez
+        public async Task UpdateAsync(CosmosPost post)  
         {
             await _cosmosStore.UpdateAsync(post);
         }

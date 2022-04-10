@@ -10,8 +10,7 @@ using Domain.Common;
 namespace Domain.Entities
 {
     [Table("Posts")] // sluzy do konfigurowania nazwy tabeli w bazie danych 
-  public class Post : AuditableEntity // tu dziedziczy po klasie wiec posiada takze wlasciwosci odnosnie kreacji
-        // i czasu itd. - sprawa poboczna
+  public class Post : AuditableEntity  
     {
         [Key] // to ja to robilem z poziomu menagera db
         public int Id { get; set; }
@@ -23,7 +22,7 @@ namespace Domain.Entities
         public string Content { get; set; }
         [Required]
         [MaxLength(450)]
-        public string UserId { get; set; }  // id z bazy danych, chyba potrzebne do logowania 
+        public string UserId { get; set; }   
         public Post()
         {
 

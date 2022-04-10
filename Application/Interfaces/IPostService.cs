@@ -26,7 +26,7 @@ namespace Application.Interfaces
         //czyli DTO
 
         //i tutaj podmieniono Post na PostDto
-        Task<PostDto> AddNewPostAsync(CreatePostDto newPost, string userId); // userID z db chyba do logowania 
+        Task<PostDto> AddNewPostAsync(CreatePostDto newPost, string userId);  
         Task UpdatePostAsync( UpdatePostDto updatePost);
         Task DeletePostAsync ( int id );
 

@@ -58,11 +58,7 @@ namespace WebAPI.Controllers.V1
             var validSortingFilter = new SortingFilter(sortingFilter.SortField, sortingFilter.Ascending);
 
             var validPaginationFilter = new PaginationFilter(paginationFilter.PageNumber, paginationFilter.PageSize);
-            //te dane teraz trzeba wyslac do odpowiedniego miejsca repozytorium
-            //zaczynamy od domeny i Ipostrepository
-            // potem do klasy postRepository w Infrastructure
-            //a potem klase seriwsu - w Application
-            // najpierw interfejs potem , potem interface post service potem Post service 
+            
             var posts = await _postService.GetAllPostsAsync(validPaginationFilter.PageNumber, validPaginationFilter.PageSize,
                                                             validSortingFilter.SortField,validSortingFilter.Ascending,
                                                             filterBy);
@@ -70,13 +66,7 @@ namespace WebAPI.Controllers.V1
 
             //lista wszystkich postow:
             var totalRecords = await _postService.GetAllPostsCountAsync(filterBy);
-
-            //to co dalej robimy: dodamy kolejna klase opakowujaca odpowiedz ktora rozszerzy response
-            // o kolejne parametry ktore maja sens tylko dla listy elementow
-
-            // po prostu opakowujemy :   no przeciez proste, 
-            //            return Ok(new PagedResponse<IEnumerable<PostDto>> (posts,validPaginationFilter.PageNumber, validPaginationFilter.PageSize)); //200 ok result 
-            ///to wyzej nei wie mczemu zastapione nizej to po co to pisalismy w tym odcinku        
+      
             return Ok(PaginationHelper.CreatePageResponse(posts, validPaginationFilter, totalRecords)); 
         
         }
@@ -127,19 +117,7 @@ namespace WebAPI.Controllers.V1
         {
             // first create  validator object :
             var validator = new CreatePostDtoValidator();
-
-            //var result = validator.Validate(newPost);
-            //if (!result.IsValid)
-            //{
-            //    return BadRequest(new Response<bool>
-            //    {
-            //        Succeeded = false,
-            //        Message = "Something went wrong.",
-            //        Errors = result.Errors.Select(x => x.ErrorMessage)
-
-            //    } );
-            //}
-            // to komentowane przy okazji walidacji nvm czy bedzie uzyte L5 fluent validation
+ 
 
             var tempString = User.FindFirstValue(ClaimTypes.NameIdentifier);
 

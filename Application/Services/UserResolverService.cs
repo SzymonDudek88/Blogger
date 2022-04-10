@@ -11,7 +11,7 @@ namespace Application.Services
     {
         // ta klasa odpowiada za sprawdzenie nazwy uzytkownika aby mozna ja bylo wykorzystac np do przypisania posta uzytkownikowi 
         // ponizszy typ to element dodatkowej biblioteki zainstalowanej nuget
-        // wstrzykuje w _context to co dzieje sie chyba w post service bo tam uzywasz http 
+        // wstrzykuje w _context to co dzieje sie   w post service bo tam uzywasz http 
         private readonly IHttpContextAccessor _context;
         // ta klasa odpowiada za przekazanie - wstrzykniecie informacji do klasy odpowiedzialnej za informacje o czasie do 
         public UserResolverService(IHttpContextAccessor context)  // paczka

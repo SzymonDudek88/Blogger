@@ -11,26 +11,14 @@ using Domain.Entities;
 using Domain.Interfaces;
 
 namespace Application.Services
-{       // zwraca dane w postaci PostDTO
-    // pozostalo wstrzykiwanie zaleznosci 
-     // W TEJ KLASIE RZUTUJESZ NA PostDTO pobierajac z postRepository typu IPostRepository ktore pracuje na POST
-
-
-    //my do tej pory nigdzie tej klasy nie uzywamy, tworzymy ja  i ona przechowuje cos podobnie jak klasa
-    //Postrepository - z infrastructure 
+{     
     public class PostService : IPostService
     {
-        //czyli rzutujemy lub wstrzykujemy ipostrepository w ktorym przechowujemy wszystkie posty na ten tutaj
-        //zbior postow
-
-        //przypisujemy do zmiennej aby nie mozna bylo nic z nia zrobic:
+         
         private readonly IPostRepository _postRepository;
         private readonly IMapper _mapper;
-        //dodano nowy konstruktor
-        // wstrzyknięto zaleznosc
-        public PostService(IPostRepository postRepository, IMapper mapper) //ctor Imaper potrzebny do mapowania
-            //wiec zeby wywolac klase PostService trzeba do niej uzyc jakiegos repozytorium typu Ipostrepository
-            // i wtedy te repozytorium wstrzyykujemy w te klase i tutaj dzieja sie rzeczy ...
+     
+        public PostService(IPostRepository postRepository, IMapper mapper)  
         {
             _postRepository = postRepository;
             _mapper = mapper;
@@ -38,10 +26,7 @@ namespace Application.Services
 
         public IQueryable<PostDto> GetAllPosts()
         {
-            var posts = _postRepository.GetAll();
-            // gdy iqueryable do mapowania nalezy uzyc metody projectto, ona generuje tylko kod sql potrzebny do
-            //zwracania odpowiendich pol , one sa badane i zwracane 
-
+            var posts = _postRepository.GetAll(); 
             return _mapper.ProjectTo<PostDto>(posts);
         }
 
@@ -93,14 +78,11 @@ namespace Application.Services
             
 
         }
-        public async Task<PostDto> AddNewPostAsync(CreatePostDto newPost, string userId) // userID z db chyba do logowania 
+        public async Task<PostDto> AddNewPostAsync(CreatePostDto newPost, string userId)  
         {
-            //if (string.IsNullOrEmpty(newPost.Title))
-            //{
-            //    throw new Exception("Post cant be empty");
-            //}
+             
             var post = _mapper.Map<Post>(newPost);
-            post.UserId = userId; // potrzebne do logowania 
+            post.UserId = userId;  
            var result =  await _postRepository.AddAsync(post);
             return _mapper.Map<PostDto>(result);
         }
@@ -108,14 +90,8 @@ namespace Application.Services
      
         public async Task UpdatePostAsync(UpdatePostDto updatePost)
         {
-            var existingPost = await _postRepository.GetByIdAsync(updatePost.Id); // pobierasz post, ponizej go nadpisujesz
-            //czyli on jest jakby po prostu wyciagniety z kolekcji i zmapowany
-            //existing post jest typu Post
-           var post = _mapper.Map(updatePost, existingPost); // wlasnie nie update post zrzucany jest na 
-            //-----------------------------------------
-            //mapowany post o tresci Updatepost i typie update post jest zmapowany typem na existin post a tresc ta sama
-           // -----------------------------
-            //wiec post powien byc typu   post i zawiera tresc z update post, wiec teraz tylko go przypisac:
+            var existingPost = await _postRepository.GetByIdAsync(updatePost.Id);  
+           var post = _mapper.Map(updatePost, existingPost);  
              
            await _postRepository.UpdateAsync(post);
         }

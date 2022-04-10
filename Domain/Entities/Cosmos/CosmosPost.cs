@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities.Cosmos
 {
-    // oznaczamy tak aby biblioteka cosmonaut wiedziala jak ma mapowac te klase na dokument oraz ktora wlasciwosc to identyfikator ddokumentu
     [CosmosCollection("posts")]
    public class CosmosPost
     {

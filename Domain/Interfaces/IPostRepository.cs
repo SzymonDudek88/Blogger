@@ -7,8 +7,7 @@ using Domain.Entities;
 
 namespace Domain.Interfaces
 {
-   public interface IPostRepository //dotyczy skladowania - okresla co trzeba uzywac odnosnie skladowania//
-        // jest to jedne ze skladowan 
+   public interface IPostRepository  
     {
          IQueryable<Post> GetAll();
 
